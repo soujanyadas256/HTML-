@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusKart — Student Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F5;
+    --surface: #FFFFFF;
+    --surface-2: #F1F4F8;
+    --navy: #1F3A5F;
+    --navy-dark: #142A47;
+    --gold: #E8A33D;
+    --gold-dark: #C97F1A;
+    --text: #22303F;
+    --text-muted: #5B6B7C;
+    --border: #E3E7EC;
+    --in-stock: #2F7D53;
+    --low-stock: #B8791C;
+    --out-stock: #B23B3B;
+    --radius: 10px;
+    --shadow: 0 2px 10px rgba(31,58,95,0.07);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--navy-dark);
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  img, svg {
+    max-width: 100%;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  header {
+    background: var(--navy);
+    border-bottom: 4px solid var(--gold);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+  }
+
+  .logo-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    color: var(--navy-dark);
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 0.2px;
+  }
+
+  .logo-text span {
+    color: var(--gold);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #E9EEF5;
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  nav a:hover {
+    color: #fff;
+    border-bottom-color: var(--gold);
+  }
+
+  .hero {
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy) 55%, var(--bg) 55%);
+    padding: 46px 24px 0;
+  }
+
+  .hero-card {
+    max-width: 1120px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 38px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    border: 1px solid var(--border);
+  }
+
+  .hero-text h1 {
+    font-size: 30px;
+    line-height: 1.25;
+    max-width: 480px;
+  }
+
+  .hero-text p {
+    color: var(--text-muted);
+    max-width: 460px;
+    margin-top: 10px;
+    font-size: 15px;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .hero-tags span {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--navy-dark);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+
+  .hero-stat {
+    text-align: center;
+    min-width: 120px;
+    padding: 18px 16px;
+    border-left: 1px solid var(--border);
+  }
+
+  .hero-stat strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;
+    color: var(--gold-dark);
+  }
+
+  .hero-stat span {
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  section {
+    padding: 54px 24px;
+  }
+
+  .section-head {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 34px;
+  }
+
+  .section-head h2 {
+    font-size: 26px;
+  }
+
+  .section-head p {
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-size: 15px;
+  }
+
+  .offer {
+    max-width: 1120px;
+    margin: 0 auto;
+    background: linear-gradient(120deg, #FFF6E6 0%, #FDECC8 100%);
+    border: 2px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 30px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    box-shadow: 0 4px 16px rgba(232,163,61,0.25);
+  }
+
+  .offer-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .offer-badge {
+    background: var(--gold-dark);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 1.2;
+    min-width: 78px;
+  }
+
+  .offer-badge small {
+    display: block;
+    font-weight: 500;
+    font-size: 10.5px;
+    opacity: 0.9;
+  }
+
+  .offer h3 {
+    font-size: 20px;
+    color: var(--navy-dark);
+  }
+
+  .offer p {
+    margin: 4px 0 0;
+    color: #6B5320;
+    font-size: 14px;
+  }
+
+  .offer-code {
+    background: var(--navy);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .cat-nav {
+    max-width: 1120px;
+    margin: 40px auto 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cat-nav a {
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--navy-dark);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 30px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .cat-nav a:hover {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+
+  .category-block {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-top: 46px;
+    border-top: 1px solid var(--border);
+  }
+
+  .category-block:first-of-type {
+    border-top: none;
+  }
+
+  .category-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .category-title h3 {
+    font-size: 21px;
+  }
+
+  .category-title span {
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .product-thumb {
+    width: 100%;
+    height: 90px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 14px;
+  }
+
+  .product-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .product-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .price {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--navy-dark);
+    font-size: 16px;
+  }
+
+  .price small {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 12px;
+    text-decoration: line-through;
+    margin-left: 4px;
+  }
+
+  .stock {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .stock.in {
+    background: #E5F3EA;
+    color: var(--in-stock);
+  }
+
+  .stock.low {
+    background: #FBF0DC;
+    color: var(--low-stock);
+  }
+
+  .stock.out {
+    background: #FBE7E7;
+    color: var(--out-stock);
+  }
+
+  .product-card p.desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 8px 0 0;
+    flex-grow: 1;
+  }
+
+  .info-band {
+    background: var(--surface-2);
+  }
+
+  .info-grid {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .info-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: 0 auto 14px;
+  }
+
+  .info-card h4 {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .info-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .order-section {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .order-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+  }
+
+  .order-form {
+    padding: 38px 42px;
+  }
+
+  .order-form h3 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .order-form > p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    margin: 0 0 24px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+
+  .form-row .field {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy-dark);
+    margin-bottom: 6px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+    background: #fff;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 18px;
+    margin-top: 4px;
+  }
+
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .btn-submit {
+    background: var(--gold-dark);
+    color: #fff;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 13px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn-submit:hover {
+    background: #B06A0F;
+    transform: translateY(-1px);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .confirm-msg {
+    display: none;
+    margin-top: 16px;
+    background: #E5F3EA;
+    border: 1px solid var(--in-stock);
+    color: var(--in-stock);
+    padding: 12px 16px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+
+  .confirm-msg.show {
+    display: block;
+  }
+
+  .order-summary {
+    background: var(--navy);
+    color: #E9EEF5;
+    padding: 38px 34px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .order-summary h4 {
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .order-summary ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+  }
+
+  .order-summary li {
+    display: flex;
+    gap: 10px;
+    font-size: 13.5px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .order-summary li::before {
+    content: "✓";
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .summary-note {
+    background: rgba(255,255,255,0.08);
+    border: 1px dashed rgba(232,163,61,0.6);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #D9E1EC;
+  }
+
+  footer {
+    background: var(--navy-dark);
+    color: #B9C4D1;
+    padding: 32px 24px 22px;
+    margin-top: 40px;
+  }
+
+  .footer-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  footer p {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  footer .foot-links {
+    display: flex;
+    gap: 18px;
+  }
+
+  footer .foot-links a {
+    text-decoration: none;
+    color: #B9C4D1;
+    font-size: 13px;
+  }
+
+  footer .foot-links a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    nav {
+      display: none;
+    }
+    .hero-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .hero-stat {
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .order-panel {
+      grid-template-columns: 1fr;
+    }
+    .order-summary {
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .offer {
+      flex-direction: column;
+      text-align: center;
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-text h1 {
+      font-size: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">CK</div>
+      <div class="logo-text">Campus<span>Kart</span></div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#offer">Offers</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#info">Info</a></li>
+        <li><a href="#order">Order Now</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-card">
+    <div class="hero-text">
+      <h1>Everything a student needs, priced for a student budget.</h1>
+      <p>Stationery, electronics, hostel essentials and more — verified for students, delivered to your campus or hostel address.</p>
+      <div class="hero-tags">
+        <span>Student ID required</span>
+        <span>Campus delivery</span>
+        <span>Cash on pickup available</span>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <strong>5</strong>
+      <span>Categories</span>
+    </div>
+    <div class="hero-stat">
+      <strong>18+</strong>
+      <span>Products live</span>
+    </div>
+    <div class="hero-stat">
+      <strong>20%</strong>
+      <span>Current discount</span>
+    </div>
+  </div>
+</div>
+
+<section id="offer">
+  <div class="offer">
+    <div class="offer-left">
+      <div class="offer-badge">20% OFF<small>this week</small></div>
+      <div>
+        <h3>Back-to-Campus Sale</h3>
+        <p>Flat 20% off on all Stationery, and free delivery on orders above ₹499. Valid for verified students only.</p>
+      </div>
+    </div>
+    <div class="offer-code">USE CODE: CAMPUS20</div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="section-head">
+    <h2>Browse by category</h2>
+    <p>Prices and stock are updated daily by the CampusKart student team.</p>
+  </div>
+
+  <div class="cat-nav">
+    <a href="#cat-stationery">Stationery</a>
+    <a href="#cat-electronics">Electronics</a>
+    <a href="#cat-books">Books &amp; Study Material</a>
+    <a href="#cat-hostel">Hostel Essentials</a>
+    <a href="#cat-apparel">Apparel</a>
+  </div>
+
+  <div class="category-block" id="cat-stationery" style="margin-top:46px;">
+    <div class="category-title">
+      <h3>Stationery</h3>
+      <span>Part of the Back-to-Campus offer</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-thumb">📓</div>
+        <h4>Notebook Combo Pack (5 pcs)</h4>
+        <p class="desc">Ruled, 180 pages each, subject labels included.</p>
+        <div class="product-meta">
+          <span class="price">₹159 <small>₹199</small></span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🖊️</div>
+        <h4>Gel Pen Set (10 pcs)</h4>
+        <p class="desc">Smooth-flow ink, assorted colours.</p>
+        <div class="product-meta">
+          <span class="price">₹72 <small>₹90</small></span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🗒️</div>
+        <h4>Sticky Notes Kit</h4>
+        <p class="desc">6 pads, 4 sizes, for notes and revision flags.</p>
+        <div class="product-meta">
+          <span class="price">₹96 <small>₹120</small></span>
+          <span class="stock low">Only 4 left</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🧮</div>
+        <h4>Scientific Calculator</h4>
+        <p class="desc">240 functions, exam-approved model.</p>
+        <div class="product-meta">
+          <span class="price">₹650</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category-block" id="cat-electronics">
+    <div class="category-title">
+      <h3>Electronics</h3>
+      <span>Basic warranty included</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-thumb">🎧</div>
+        <h4>Wireless Earbuds</h4>
+        <p class="desc">Bluetooth 5.0, 20-hr case battery.</p>
+        <div class="product-meta">
+          <span class="price">₹1,299</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🔌</div>
+        <h4>USB-C Charging Cable</h4>
+        <p class="desc">1.2m, fast-charge compatible.</p>
+        <div class="product-meta">
+          <span class="price">₹199</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">💻</div>
+        <h4>Laptop Sleeve 15.6"</h4>
+        <p class="desc">Padded, water-resistant exterior.</p>
+        <div class="product-meta">
+          <span class="price">₹499</span>
+          <span class="stock low">Only 2 left</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🔋</div>
+        <h4>Power Bank 10,000mAh</h4>
+        <p class="desc">Dual output, compact for hostel use.</p>
+        <div class="product-meta">
+          <span class="price">₹899</span>
+          <span class="stock out">Out of Stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category-block" id="cat-books">
+    <div class="category-title">
+      <h3>Books &amp; Study Material</h3>
+      <span>New and pre-owned</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-thumb">📄</div>
+        <h4>Previous Year Question Papers Bundle</h4>
+        <p class="desc">Last 5 years, semester-wise, printed.</p>
+        <div class="product-meta">
+          <span class="price">₹250</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">📘</div>
+        <h4>Programming Reference Guide</h4>
+        <p class="desc">Covers C, Python and Java basics.</p>
+        <div class="product-meta">
+          <span class="price">₹399</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">📗</div>
+        <h4>Used Textbook — Data Structures</h4>
+        <p class="desc">Good condition, minimal highlighting.</p>
+        <div class="product-meta">
+          <span class="price">₹300</span>
+          <span class="stock low">Only 1 left</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🗂️</div>
+        <h4>Semester Planner &amp; Diary</h4>
+        <p class="desc">Weekly layout with a timetable grid.</p>
+        <div class="product-meta">
+          <span class="price">₹180</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category-block" id="cat-hostel">
+    <div class="category-title">
+      <h3>Hostel Essentials</h3>
+      <span>Room and daily-use items</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-thumb">💡</div>
+        <h4>Study Lamp</h4>
+        <p class="desc">Adjustable neck, 3 brightness modes.</p>
+        <div class="product-meta">
+          <span class="price">₹450</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🛏️</div>
+        <h4>Bedsheet Set</h4>
+        <p class="desc">Single bed, cotton blend, 2 pillow covers.</p>
+        <div class="product-meta">
+          <span class="price">₹599</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🧺</div>
+        <h4>Mini Storage Organizer</h4>
+        <p class="desc">Foldable, fits under-bed or in-cupboard.</p>
+        <div class="product-meta">
+          <span class="price">₹350</span>
+          <span class="stock low">Only 5 left</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🍵</div>
+        <h4>Electric Kettle</h4>
+        <p class="desc">0.5L, auto shut-off, hostel-room safe.</p>
+        <div class="product-meta">
+          <span class="price">₹699</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="category-block" id="cat-apparel">
+    <div class="category-title">
+      <h3>Apparel</h3>
+      <span>Campus wear</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-thumb">👕</div>
+        <h4>Campus Hoodie</h4>
+        <p class="desc">Fleece-lined, unisex sizing S–XL.</p>
+        <div class="product-meta">
+          <span class="price">₹799</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">👚</div>
+        <h4>College Logo T-Shirt</h4>
+        <p class="desc">100% cotton, regular fit.</p>
+        <div class="product-meta">
+          <span class="price">₹349</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🧢</div>
+        <h4>Campus Cap</h4>
+        <p class="desc">Adjustable strap, embroidered logo.</p>
+        <div class="product-meta">
+          <span class="price">₹249</span>
+          <span class="stock in">In Stock</span>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-thumb">🧣</div>
+        <h4>Winter Muffler</h4>
+        <p class="desc">Soft-knit, college colours.</p>
+        <div class="product-meta">
+          <span class="price">₹299</span>
+          <span class="stock out">Out of Stock</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-band" id="info">
+  <div class="section-head">
+    <h2>Good to know before you order</h2>
+    <p>A few details about how CampusKart works for students.</p>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">🎓</div>
+      <h4>Student-only access</h4>
+      <p>A valid college ID or roll number is required at checkout to confirm eligibility for student pricing.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🚚</div>
+      <h4>Campus delivery</h4>
+      <p>Orders are delivered to your hostel block or a nominated campus pickup point within 2–4 working days.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">💳</div>
+      <h4>Flexible payment</h4>
+      <p>Pay by UPI or card online, or choose cash on pickup at the campus counter.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">↩️</div>
+      <h4>Easy returns</h4>
+      <p>Unused items in original packaging can be returned within 5 days of delivery.</p>
+    </div>
+  </div>
+</section>
+
+<section id="order">
+  <div class="section-head">
+    <h2>Place your order</h2>
+    <p>Fill in your details below and our team will confirm your order by email or phone.</p>
+  </div>
+
+  <div class="order-section">
+    <div class="order-panel">
+      <form class="order-form" id="orderForm">
+        <h3>Order Form</h3>
+        <p>All fields marked with * are required.</p>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" placeholder="e.g. Ananya Sharma" required>
+          </div>
+          <div class="field">
+            <label for="rollNo">Roll Number / Student ID *</label>
+            <input type="text" id="rollNo" placeholder="e.g. 26101293" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">College Email *</label>
+            <input type="email" id="email" placeholder="you@college.edu" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" placeholder="10-digit mobile number" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="product">Select Product *</label>
+            <select id="product" required>
+              <option value="">Choose a product</option>
+              <optgroup label="Stationery">
+                <option>Notebook Combo Pack (5 pcs) — ₹159</option>
+                <option>Gel Pen Set (10 pcs) — ₹72</option>
+                <option>Sticky Notes Kit — ₹96</option>
+                <option>Scientific Calculator — ₹650</option>
+              </optgroup>
+              <optgroup label="Electronics">
+                <option>Wireless Earbuds — ₹1,299</option>
+                <option>USB-C Charging Cable — ₹199</option>
+                <option>Laptop Sleeve 15.6" — ₹499</option>
+              </optgroup>
+              <optgroup label="Books & Study Material">
+                <option>Previous Year Question Papers Bundle — ₹250</option>
+                <option>Programming Reference Guide — ₹399</option>
+                <option>Semester Planner & Diary — ₹180</option>
+              </optgroup>
+              <optgroup label="Hostel Essentials">
+                <option>Study Lamp — ₹450</option>
+                <option>Bedsheet Set — ₹599</option>
+                <option>Electric Kettle — ₹699</option>
+              </optgroup>
+              <optgroup label="Apparel">
+                <option>Campus Hoodie — ₹799</option>
+                <option>College Logo T-Shirt — ₹349</option>
+                <option>Campus Cap — ₹249</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field">
+            <label for="qty">Quantity *</label>
+            <input type="number" id="qty" min="1" value="1" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="address">Delivery Address / Hostel Block *</label>
+          <textarea id="address" placeholder="Hostel name, block, room number, campus" required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Payment Method *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="payment" value="upi" checked> UPI</label>
+            <label><input type="radio" name="payment" value="card"> Card</label>
+            <label><input type="radio" name="payment" value="cod"> Cash on Pickup</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="notes">Special Instructions (optional)</label>
+          <textarea id="notes" placeholder="e.g. preferred delivery time, gift wrap, etc."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Place Order</button>
+        <div class="confirm-msg" id="confirmMsg">Thanks! Your order request has been noted. CampusKart will confirm it by email shortly.</div>
+      </form>
+
+      <div class="order-summary">
+        <h4>Why order through CampusKart?</h4>
+        <ul>
+          <li>Prices matched to student budgets</li>
+          <li>No minimum order value</li>
+          <li>Delivered straight to your hostel</li>
+          <li>Verified sellers only</li>
+          <li>Easy 5-day return window</li>
+        </ul>
+        <div class="summary-note">
+          Use code <strong>CAMPUS20</strong> at checkout for 20% off Stationery orders above ₹499. Offer applies automatically once your order is confirmed by the team.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <p>© 2026 CampusKart. Built for students, by students.</p>
+    <div class="foot-links">
+      <a href="#offer">Offers</a>
+      <a href="#products">Products</a>
+      <a href="#order">Order Now</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('orderForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('confirmMsg').classList.add('show');
+  });
+</script>
+
+</body>
+</html>
