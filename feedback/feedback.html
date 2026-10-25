@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Give Feedback</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#333;margin:0}
+nav{background:#dbe9f6;padding:12px 20px}
+nav a{margin-right:18px;color:#2a5d8f;text-decoration:none;font-weight:bold}
+.box{max-width:800px;margin:25px auto;background:#fff;padding:20px;border:1px solid #d5e2ee}
+table{width:100%;border-collapse:collapse;margin-bottom:15px}
+th,td{border:1px solid #d5e2ee;padding:8px;text-align:center}
+th{background:#e8f2fb}
+td.q{text-align:left}
+textarea,input[type=range]{width:100%;box-sizing:border-box}
+textarea{padding:7px;height:80px;font-family:inherit}
+label{display:block;margin:12px 0 5px;font-weight:bold}
+button{background:#5b9bd5;color:#fff;border:none;padding:9px 22px;cursor:pointer}
+.info{background:#e8f2fb;padding:10px;margin-bottom:10px}
+.err{color:#c0392b}.ok{color:#2e8b57}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="courses.html">My Courses</a>
+  <a href="#" id="logout">Logout</a>
+</nav>
+
+<div class="box">
+  <h2>Course Feedback</h2>
+  <div class="info" id="courseInfo"></div>
+
+  <form id="fbForm">
+    <p>Rate each point from 1 (Poor) to 5 (Excellent).</p>
+    <table id="qTable">
+      <tr><th style="text-align:left">Question</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+    </table>
+
+    <label>Would you recommend this course? <span id="sliderVal">5</span> / 10</label>
+    <input type="range" id="slider" min="0" max="10" value="5">
+
+    <label for="comment">Comments (optional, max 200 characters)</label>
+    <textarea id="comment" maxlength="200"></textarea>
+
+    <label><input type="checkbox" id="anon" checked> Submit anonymously</label>
+
+    <br>
+    <button type="submit">Submit Feedback</button>
+  </form>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+var user = JSON.parse(localStorage.getItem("session") || "null");
+if (!user || user.role !== "student") { location.href = "login.html"; }
+
+var courses = [
+  {id: "CSE101", name: "Data Structures", faculty: "Dr. Anita Sharma"},
+  {id: "CSE202", name: "Database Management", faculty: "Prof. Rahul Verma"},
+  {id: "CSE303", name: "Web Technologies", faculty: "Dr. Meera Kapoor"},
+  {id: "MAT110", name: "Discrete Mathematics", faculty: "Prof. Sandeep Singh"},
+  {id: "HUM105", name: "Professional Communication", faculty: "Ms. Neha Gill"}
+];
+var courseId = new URLSearchParams(location.search).get("course");
+var course = courses.find(function (c) { return c.id === courseId; });
+if (!course) { location.href = "courses.html"; }
+
+document.getElementById("courseInfo").innerHTML =
+  "<b>" + course.id + " - " + course.name + "</b><br>Faculty: " + course.faculty;
+
+var questions = [
+  "The faculty explains concepts clearly",
+  "The faculty is well prepared for classes",
+  "The course content is useful and up to date",
+  "The faculty responds well to student doubts",
+  "Overall teaching quality"
+];
+var rows = "";
+questions.forEach(function (q, i) {
+  rows += "<tr><td class='q'>" + q + "</td>";
+  for (var n = 1; n <= 5; n++) {
+    rows += "<td><input type='radio' name='q" + i + "' value='" + n + "'></td>";
+  }
+  rows += "</tr>";
+});
+document.getElementById("qTable").innerHTML += rows;
+
+document.getElementById("slider").oninput = function () {
+  document.getElementById("sliderVal").textContent = this.value;
+};
+
+var submitted = JSON.parse(localStorage.getItem("submitted") || "[]");
+var key = user.id + "_" + course.id;
+function show(text, cls) {
+  var m = document.getElementById("msg");
+  m.textContent = text;
+  m.className = cls;
+}
+if (submitted.indexOf(key) !== -1) {
+  document.getElementById("fbForm").style.display = "none";
+  show("You have already submitted feedback for this course.", "err");
+}
+
+document.getElementById("fbForm").onsubmit = function (e) {
+  e.preventDefault();
+
+  var ratings = [];
+  for (var i = 0; i < questions.length; i++) {
+    var picked = document.querySelector("input[name=q" + i + "]:checked");
+    if (!picked) { show("Please answer question " + (i + 1) + ".", "err"); return; }
+    ratings.push(Number(picked.value));
+  }
+
+  var anon = document.getElementById("anon").checked;
+  var all = JSON.parse(localStorage.getItem("feedback") || "[]");
+  all.push({
+    courseId: course.id,
+    faculty: course.faculty,
+    ratings: ratings,
+    recommend: Number(document.getElementById("slider").value),
+    comment: document.getElementById("comment").value.trim(),
+    student: anon ? "Anonymous" : user.id,
+    date: new Date().toLocaleDateString()
+  });
+  localStorage.setItem("feedback", JSON.stringify(all));
+
+  submitted.push(key);
+  localStorage.setItem("submitted", JSON.stringify(submitted));
+
+  document.getElementById("fbForm").style.display = "none";
+  show("Thank you! Your feedback was submitted. Redirecting...", "ok");
+  setTimeout(function () { location.href = "courses.html"; }, 1500);
+};
+
+document.getElementById("logout").onclick = function () {
+  localStorage.removeItem("session");
+  location.href = "login.html";
+};
+</script>
+
+</body>
+</html>
