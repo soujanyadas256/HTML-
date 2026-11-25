@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#333;margin:0}
+nav{background:#dbe9f6;padding:12px 20px}
+nav a{margin-right:18px;color:#2a5d8f;text-decoration:none;font-weight:bold}
+.box{max-width:700px;margin:25px auto;background:#fff;padding:20px;border:1px solid #d5e2ee}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #d5e2ee;padding:8px;text-align:left}
+th{background:#e8f2fb}
+input,select{width:100%;padding:7px;margin:5px 0 12px;box-sizing:border-box}
+button{background:#5b9bd5;color:#fff;border:none;padding:8px 18px;cursor:pointer}
+.err{color:#c0392b}.ok{color:#2e8b57}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="courses.html">My Courses</a>
+</nav>
+
+<div class="box" style="max-width:400px">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label>Login as</label>
+    <select id="role">
+      <option value="student">Student</option>
+      <option value="admin">Admin</option>
+    </select>
+    <label>Registration number / Admin ID</label>
+    <input type="text" id="loginId" required>
+    <label>Password</label>
+    <input type="password" id="loginPass" required>
+    <button type="submit">Login</button>
+  </form>
+  <p><small>Demo student: 12345678 / student123<br>Demo admin: admin / admin123</small></p>
+
+  <hr>
+  <h2>Register (students)</h2>
+  <form id="regForm">
+    <label>Full name</label>
+    <input type="text" id="regName" required>
+    <label>Registration number (8 digits)</label>
+    <input type="text" id="regId" maxlength="8" required>
+    <label>Password (min 6 characters)</label>
+    <input type="password" id="regPass" required>
+    <label>Confirm password</label>
+    <input type="password" id="regPass2" required>
+    <button type="submit">Create account</button>
+  </form>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+// users are stored in the browser (localStorage) - no backend
+var users = JSON.parse(localStorage.getItem("users") || "null");
+if (!users) {
+  users = [
+    {id: "admin", name: "Administrator", password: "admin123", role: "admin"},
+    {id: "12345678", name: "Demo Student", password: "student123", role: "student"}
+  ];
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function show(text, cls) {
+  var m = document.getElementById("msg");
+  m.textContent = text;
+  m.className = cls;
+}
+
+document.getElementById("loginForm").onsubmit = function (e) {
+  e.preventDefault();
+  var id = document.getElementById("loginId").value.trim();
+  var pass = document.getElementById("loginPass").value;
+  var role = document.getElementById("role").value;
+  var found = users.find(function (u) {
+    return u.id === id && u.password === pass && u.role === role;
+  });
+  if (!found) { show("Wrong ID, password or role.", "err"); return; }
+  localStorage.setItem("session", JSON.stringify(found));
+  location.href = (role === "admin") ? "admin.html" : "courses.html";
+};
+
+document.getElementById("regForm").onsubmit = function (e) {
+  e.preventDefault();
+  var name = document.getElementById("regName").value.trim();
+  var id = document.getElementById("regId").value.trim();
+  var p1 = document.getElementById("regPass").value;
+  var p2 = document.getElementById("regPass2").value;
+
+  if (!/^[0-9]{8}$/.test(id)) { show("Registration number must be 8 digits.", "err"); return; }
+  if (p1.length < 6) { show("Password must be at least 6 characters.", "err"); return; }
+  if (p1 !== p2) { show("Passwords do not match.", "err"); return; }
+  if (users.some(function (u) { return u.id === id; })) { show("Already registered.", "err"); return; }
+
+  users.push({id: id, name: name, password: p1, role: "student"});
+  localStorage.setItem("users", JSON.stringify(users));
+  document.getElementById("regForm").reset();
+  show("Account created. You can login now.", "ok");
+};
+</script>
+</body>
+</html>

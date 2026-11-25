@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thank You</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#333;margin:0}
+nav{background:#dbe9f6;padding:12px 20px}
+nav a{margin-right:18px;color:#2a5d8f;text-decoration:none;font-weight:bold}
+.box{max-width:500px;margin:40px auto;background:#fff;padding:30px;border:1px solid #d5e2ee;text-align:center}
+.tick{font-size:48px;color:#2e8b57}
+.info{background:#e8f2fb;padding:10px;margin:18px 0}
+.btn{display:inline-block;background:#5b9bd5;color:#fff;padding:9px 20px;text-decoration:none;margin:5px}
+.btn.light{background:#e8f2fb;color:#2a5d8f}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="courses.html">My Courses</a>
+  <a href="#" id="logout">Logout</a>
+</nav>
+
+<div class="box">
+  <div class="tick">&#10004;</div>
+  <h2>Thank you for your feedback!</h2>
+  <p>Your response has been submitted successfully.</p>
+  <div class="info" id="courseInfo">Your feedback helps improve teaching and course quality.</div>
+  <a class="btn" href="courses.html">Back to My Courses</a>
+  <a class="btn light" href="index.html">Home</a>
+</div>
+
+<script>
+// only logged-in students can see this page
+var user = JSON.parse(localStorage.getItem("session") || "null");
+if (!user || user.role !== "student") { location.href = "login.html"; }
+
+// show which course the feedback was for
+var courses = {
+  CSE101: "Data Structures", CSE202: "Database Management",
+  CSE303: "Web Technologies", MAT110: "Discrete Mathematics",
+  HUM105: "Professional Communication"
+};
+var id = new URLSearchParams(location.search).get("course");
+if (courses[id]) {
+  document.getElementById("courseInfo").textContent = "Feedback submitted for " + id + " - " + courses[id];
+}
+
+document.getElementById("logout").onclick = function () {
+  localStorage.removeItem("session");
+  location.href = "login.html";
+};
+</script>
+
+</body>
+</html>

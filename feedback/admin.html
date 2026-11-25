@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#333;margin:0}
+nav{background:#dbe9f6;padding:12px 20px}
+nav a{margin-right:18px;color:#2a5d8f;text-decoration:none;font-weight:bold}
+.box{max-width:900px;margin:25px auto;background:#fff;padding:20px;border:1px solid #d5e2ee}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.card{flex:1;min-width:150px;background:#e8f2fb;padding:14px;text-align:center}
+.card b{display:block;font-size:26px;color:#2a5d8f}
+table{width:100%;border-collapse:collapse;margin-bottom:20px}
+th,td{border:1px solid #d5e2ee;padding:8px;text-align:left}
+th{background:#e8f2fb}
+button{background:#5b9bd5;color:#fff;border:none;padding:8px 16px;cursor:pointer;margin-right:6px}
+button.light{background:#e8f2fb;color:#2a5d8f}
+.chartbox{max-width:600px;margin:0 auto 20px}
+.muted{color:#777}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="admin.html">Dashboard</a>
+  <a href="#" id="logout">Logout</a>
+</nav>
+
+<div class="box">
+  <h2>Admin Dashboard</h2>
+  <p id="welcome"></p>
+
+  <div class="cards">
+    <div class="card"><b id="totalResp">0</b>Total responses</div>
+    <div class="card"><b id="overallAvg">-</b>Overall average (out of 5)</div>
+    <div class="card"><b id="totalCourses">0</b>Courses</div>
+  </div>
+
+  <p>
+    <button id="sampleBtn">Add sample data</button>
+    <button id="clearBtn" class="light">Clear all feedback</button>
+  </p>
+
+  <h3>Course-wise and faculty-wise results</h3>
+  <input type="text" id="search" placeholder="Search course or faculty" style="width:100%;padding:7px;margin-bottom:10px;box-sizing:border-box">
+  <table>
+    <thead>
+      <tr><th>Code</th><th>Course</th><th>Faculty</th><th>Responses</th><th>Average rating</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <h3>Average rating per faculty</h3>
+  <div class="chartbox"><canvas id="chart"></canvas></div>
+  <p id="noData" class="muted" hidden>No feedback yet. Submit some as a student, or click "Add sample data".</p>
+
+  <h3>Recent comments</h3>
+  <table>
+    <thead><tr><th>Date</th><th>Course</th><th>From</th><th>Comment</th></tr></thead>
+    <tbody id="comments"></tbody>
+  </table>
+</div>
+
+<script>
+// 1. Only admin can open this page
+var user = null;
+try { user = JSON.parse(localStorage.getItem("session") || "null"); } catch (e) { user = null; }
+if (!user || user.role !== "admin") {
+  // show the reason instead of silently going to the login page
+  var reason = user
+    ? "You are logged in as '" + user.name + "' (role: " + user.role + "), not as admin."
+    : "No login session was found. Login from login.html with 'Login as: Admin'.";
+  document.querySelector(".box").innerHTML =
+    "<h2>Access denied</h2><p>" + reason + "</p><p><a href='login.html'>Go to login page</a></p>";
+  throw new Error("Not logged in as admin");
+}
+document.getElementById("welcome").textContent = "Logged in as " + user.name;
+
+var courses = [
+  {id: "CSE101", name: "Data Structures", faculty: "Dr. Anita Sharma"},
+  {id: "CSE202", name: "Database Management", faculty: "Prof. Rahul Verma"},
+  {id: "CSE303", name: "Web Technologies", faculty: "Dr. Meera Kapoor"},
+  {id: "MAT110", name: "Discrete Mathematics", faculty: "Prof. Sandeep Singh"},
+  {id: "HUM105", name: "Professional Communication", faculty: "Ms. Neha Gill"}
+];
+
+var chart = null;
+
+// average of a list of numbers
+function avg(list) {
+  if (list.length === 0) return 0;
+  var sum = 0;
+  list.forEach(function (n) { sum += n; });
+  return sum / list.length;
+}
+
+// one feedback = average of its 5 ratings
+function score(f) { return avg(f.ratings); }
+
+function showDashboard() {
+  var all = JSON.parse(localStorage.getItem("feedback") || "[]");
+  var q = document.getElementById("search").value.toLowerCase();
+
+  // summary cards
+  document.getElementById("totalResp").textContent = all.length;
+  document.getElementById("overallAvg").textContent =
+    all.length ? avg(all.map(score)).toFixed(2) : "-";
+  document.getElementById("totalCourses").textContent = courses.length;
+
+  // table: one row per course
+  var html = "";
+  var labels = [], values = [];
+  courses.forEach(function (c) {
+    var mine = all.filter(function (f) { return f.courseId === c.id; });
+    var a = mine.length ? avg(mine.map(score)) : 0;
+    labels.push(c.faculty);
+    values.push(Number(a.toFixed(2)));
+    if ((c.id + c.name + c.faculty).toLowerCase().indexOf(q) === -1) return;
+    html += "<tr><td>" + c.id + "</td><td>" + c.name + "</td><td>" + c.faculty + "</td><td>" +
+      mine.length + "</td><td>" + (mine.length ? a.toFixed(2) + " / 5" : "-") + "</td></tr>";
+  });
+  document.getElementById("rows").innerHTML = html || "<tr><td colspan='5'>No courses found.</td></tr>";
+
+  // chart
+  document.getElementById("noData").hidden = all.length > 0;
+  if (chart) chart.destroy();
+  if (typeof Chart !== "undefined") {
+    chart = new Chart(document.getElementById("chart"), {
+      type: "bar",
+      data: {labels: labels, datasets: [{label: "Average rating", data: values, backgroundColor: "#8ebfe6"}]},
+      options: {scales: {y: {min: 0, max: 5}}}
+    });
+  }
+
+  // latest 5 comments
+  var withText = all.filter(function (f) { return f.comment; }).slice(-5).reverse();
+  document.getElementById("comments").innerHTML = withText.map(function (f) {
+    return "<tr><td>" + f.date + "</td><td>" + f.courseId + "</td><td>" + f.student +
+      "</td><td>" + f.comment.replace(/</g, "&lt;") + "</td></tr>";
+  }).join("") || "<tr><td colspan='4'>No comments yet.</td></tr>";
+}
+
+// sample data so the dashboard is not empty during a demo
+document.getElementById("sampleBtn").onclick = function () {
+  var all = JSON.parse(localStorage.getItem("feedback") || "[]");
+  var samples = [
+    ["CSE101", [5,4,5,4,5], "Very clear explanations."],
+    ["CSE101", [4,4,4,3,4], ""],
+    ["CSE202", [3,4,3,3,3], "More practical examples needed."],
+    ["CSE303", [5,5,4,5,5], "Great course."],
+    ["MAT110", [3,3,4,3,3], ""],
+    ["HUM105", [4,5,4,4,4], "Helpful sessions."]
+  ];
+  samples.forEach(function (s) {
+    var c = courses.find(function (x) { return x.id === s[0]; });
+    all.push({courseId: c.id, faculty: c.faculty, ratings: s[1], recommend: 7,
+              comment: s[2], student: "Anonymous", date: new Date().toLocaleDateString()});
+  });
+  localStorage.setItem("feedback", JSON.stringify(all));
+  showDashboard();
+};
+
+document.getElementById("clearBtn").onclick = function () {
+  if (confirm("Delete all feedback and submission records?")) {
+    localStorage.removeItem("feedback");
+    localStorage.removeItem("submitted");
+    showDashboard();
+  }
+};
+
+document.getElementById("search").oninput = showDashboard;
+document.getElementById("logout").onclick = function () {
+  localStorage.removeItem("session");
+  location.href = "login.html";
+};
+
+showDashboard();
+</script>
+
+</body>
+</html>

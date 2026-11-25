@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Courses</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#333;margin:0}
+nav{background:#dbe9f6;padding:12px 20px}
+nav a{margin-right:18px;color:#2a5d8f;text-decoration:none;font-weight:bold}
+.box{max-width:800px;margin:25px auto;background:#fff;padding:20px;border:1px solid #d5e2ee}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #d5e2ee;padding:8px;text-align:left}
+th{background:#e8f2fb}
+input{width:100%;padding:7px;margin:5px 0 14px;box-sizing:border-box}
+.ok{color:#2e8b57;font-weight:bold}
+.pending{color:#b7791f}
+.btn{background:#5b9bd5;color:#fff;padding:5px 12px;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="courses.html">My Courses</a>
+  <a href="#" id="logout">Logout</a>
+</nav>
+
+<div class="box">
+  <h2>My Courses</h2>
+  <p id="welcome"></p>
+  <p id="count"></p>
+
+  <input type="text" id="search" placeholder="Search course or faculty">
+
+  <table>
+    <thead>
+      <tr><th>Code</th><th>Course</th><th>Faculty</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+<script>
+// 1. Check login (saved by login.html)
+var user = JSON.parse(localStorage.getItem("session") || "null");
+if (!user || user.role !== "student") { location.href = "login.html"; }
+
+// 2. Course list
+var courses = [
+  {id: "CSE101", name: "Data Structures", faculty: "Dr. Anita Sharma"},
+  {id: "CSE202", name: "Database Management", faculty: "Prof. Rahul Verma"},
+  {id: "CSE303", name: "Web Technologies", faculty: "Dr. Meera Kapoor"},
+  {id: "MAT110", name: "Discrete Mathematics", faculty: "Prof. Sandeep Singh"},
+  {id: "HUM105", name: "Professional Communication", faculty: "Ms. Neha Gill"}
+];
+
+// 3. Feedback already submitted (feedback page will add "studentId_courseId")
+var submitted = JSON.parse(localStorage.getItem("submitted") || "[]");
+
+function isDone(c) { return submitted.indexOf(user.id + "_" + c.id) !== -1; }
+
+// 4. Draw the table
+function showTable() {
+  var q = document.getElementById("search").value.toLowerCase();
+  var html = "";
+  courses.forEach(function (c) {
+    if ((c.name + c.faculty + c.id).toLowerCase().indexOf(q) === -1) return;
+    var done = isDone(c);
+    html += "<tr><td>" + c.id + "</td><td>" + c.name + "</td><td>" + c.faculty + "</td>" +
+      "<td>" + (done ? "<span class='ok'>Submitted</span>" : "<span class='pending'>Pending</span>") + "</td>" +
+      "<td>" + (done ? "-" : "<a class='btn' href='feedback.html?course=" + c.id + "'>Give feedback</a>") + "</td></tr>";
+  });
+  document.getElementById("rows").innerHTML = html || "<tr><td colspan='5'>No courses found.</td></tr>";
+}
+
+// 5. Page setup
+document.getElementById("welcome").textContent = "Welcome, " + user.name;
+document.getElementById("count").textContent =
+  courses.filter(isDone).length + " of " + courses.length + " feedback forms submitted";
+document.getElementById("search").oninput = showTable;
+document.getElementById("logout").onclick = function () {
+  localStorage.removeItem("session");
+  location.href = "login.html";
+};
+showTable();
+</script>
+
+</body>
+</html>
